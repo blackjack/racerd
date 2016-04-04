@@ -1,8 +1,7 @@
 use iron::prelude::*;
 use iron::status;
 use iron::mime::Mime;
-
-use rustc_serialize::json;
+use serde_json;
 
 use engine::{SemanticEngine, Completion, Context, CursorPosition, Buffer};
 use super::EngineProvider;
@@ -32,7 +31,7 @@ pub fn list(req: &mut Request) -> IronResult<Response> {
             trace!("got a match");
             let res = completions.into_iter().map(|c| CompletionResponse::from(c)).collect::<Vec<_>>();
             let content_type = "application/json".parse::<Mime>().unwrap();
-            Ok(Response::with((content_type, status::Ok, json::encode(&res).unwrap())))
+            Ok(Response::with((content_type, status::Ok, serde_json::to_string(&res).unwrap())))
         },
 
         // 204 No Content; Everything went ok, but the definition was not found.
@@ -49,7 +48,7 @@ pub fn list(req: &mut Request) -> IronResult<Response> {
     }
 }
 
-#[derive(Debug, RustcDecodable, Clone)]
+#[derive(Debug, Deserialize, Clone)]
 struct ListCompletionsRequest {
     pub buffers: Vec<Buffer>,
     pub file_path: String,
@@ -66,7 +65,7 @@ impl ListCompletionsRequest {
 
 type ListCompletionsResponse = Vec<CompletionResponse>;
 
-#[derive(Debug, RustcEncodable)]
+#[derive(Debug, Serialize)]
 struct CompletionResponse {
     text: String,
     context: String,

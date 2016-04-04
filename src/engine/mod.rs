@@ -79,7 +79,7 @@ pub struct CursorPosition {
 pub mod racer;
 pub use self::racer::Racer;
 
-#[derive(Debug, RustcDecodable, Clone)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct Buffer {
     pub file_path: String,
     pub contents: String,

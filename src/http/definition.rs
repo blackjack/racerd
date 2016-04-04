@@ -2,8 +2,7 @@
 use iron::prelude::*;
 use iron::status;
 use iron::mime::Mime;
-
-use rustc_serialize::json;
+use serde_json;
 
 use engine::{SemanticEngine, Definition, Context, CursorPosition, Buffer};
 use super::EngineProvider;
@@ -43,7 +42,7 @@ pub fn find(req: &mut Request) -> IronResult<Response> {
             trace!("definition::find got a match");
             let res = FindDefinitionResponse::from(definition);
             let content_type = "application/json".parse::<Mime>().unwrap();
-            Ok(Response::with((content_type, status::Ok, json::encode(&res).unwrap())))
+            Ok(Response::with((content_type, status::Ok, serde_json::to_string(&res).unwrap())))
         },
 
         // 204 No Content; Everything went ok, but the definition was not found.
@@ -73,7 +72,7 @@ impl From<Definition> for FindDefinitionResponse {
     }
 }
 
-#[derive(Debug, RustcDecodable, Clone)]
+#[derive(Debug, Deserialize, Clone)]
 struct FindDefinitionRequest {
     pub buffers: Vec<Buffer>,
     pub file_path: String,
@@ -106,7 +105,7 @@ fn find_definition_request_from_json() {
     assert_eq!(req.column, 3);
 }
 
-#[derive(Debug, RustcDecodable, RustcEncodable)]
+#[derive(Debug, Deserialize, Serialize)]
 struct FindDefinitionResponse {
     pub file_path: String,
     pub column: usize,
