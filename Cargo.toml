@@ -11,18 +11,29 @@ persistent = "0.1"
 log = "0.3"
 rand = "0.3"
 env_logger = "0.3"
+racer = "1.2.6"
 regex = "0.1"
 bodyparser = "0.3"
-racer = "1.2.6"
-logger = "0.0.3"
-hyper = "0.8"
-iron = "0.3"
-rust-crypto = "0.2"
 serde = "0.7"
 serde_json = "0.7"
 serde_macros = "0.7"
+
+[dependencies.logger]
+git = "https://github.com/blackjack/logger.git"
+rev = "2e9082235f4d94fb8609b131f1e1d1b96437f672"
+
+[dependencies.hyper]
+version = "0.8"
+default-features = false
+
+[dependencies.iron]
+version = "0.3"
+default-features = false
 
 [dependencies.iron-hmac]
 git = "https://github.com/blackjack/iron-hmac"
 rev = "8d5ebd3b524984ce1077833206a55bb75d5a6645"
 features = ["hmac-rust-crypto"]
+
+[dev-dependencies]
+rust-crypto = "0.2.34"
